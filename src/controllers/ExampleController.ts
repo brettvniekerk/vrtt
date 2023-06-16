@@ -1,7 +1,8 @@
-import { Controller, Get, Route, SuccessResponse } from "tsoa";
+import { Controller, Get, Route, SuccessResponse, Tags } from "tsoa";
 import { Example } from "../types";
 import { ExampleService } from "../services/ExampleService";
 
+@Tags("example")
 @Route("example")
 export class ExampleController extends Controller {
   private service: ExampleService;

@@ -3,10 +3,19 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
+    "description": "The swagger documentation for this API",
     "outputDirectory": "build",
-    "specVersion": 3
+    "specVersion": 3,
+    "tags": [
+      {
+        "name": "example",
+        "description": "An example tag for an endpoint"
+      }
+    ]
   },
   "routes": {
-    "routesDir": "build"
+    "routesDir": "build",
+    "middleware": "express",
+    "esm": true
   }
 }

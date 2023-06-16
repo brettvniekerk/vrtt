@@ -24,20 +24,26 @@ app.use(
 app.use(json());
 app.use(cors());
 
-// get rid of 304 status
-app.disable("etag"); // can also use custom middleware to set the last modified time to now
-app.use(morgan("tiny"));
+app.use(morgan("dev"));
+
+// disable leaking express
+app.disable("x-powered-by");
 
 // helmet security rules
 app.use(helmet());
 
 // custom middleware
+// ...
 
 // swagger
 app.use(["/swagger", "/docs"], swagger.serve, swagger.setup(swaggerJson));
 
+// need to register routes first before handling unknown routes and errors
+RegisterRoutes(app);
+
 // basic error handler
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  // from docs, may as well keep
   if (err instanceof ValidateError) {
     console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
 
@@ -47,17 +53,16 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     });
   }
 
+  // generic handler
   if (err instanceof Error) {
     return res.status(500).json({
-      message: "Internal Server Error"
+      message: "Internal Server Error",
+      details: err.message
     });
   }
 
   next();
 });
-
-// need to register routes first before handling unknown routes
-RegisterRoutes(app);
 
 // not found handler
 app.use((_: Request, res: Response) =>
